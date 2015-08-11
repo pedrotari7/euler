@@ -37,7 +37,6 @@ for row in xrange(size):
 	for i in xrange(size):
 		if i + 4 > size:
 			break
-
 	 	mult = reduce(operator.mul,table[row][i:i+4])
 	 	
 	 	if mult > max_horizontal:
@@ -71,19 +70,22 @@ for row in xrange(size):
 
 			if (row + aux) < size and  (i + aux) < size:
 				numbers1.append(table[row+aux][i+aux])
+			else:
+				numbers1 = []
 
-			 	mult = reduce(operator.mul,numbers1)
-			 	
-			 	if mult > max_diagonal:
-			 		max_diagonal = mult
+			if (row + aux) < size and  (i - aux) >= 0:
 
-			if (row - aux) > 0 and  (i - aux) > 0:
-				numbers2.append(table[row-aux][i-aux])
+				numbers2.append(table[row+aux][i-aux])
+			else:
+				numbers2 = []
 
-			 	mult = reduce(operator.mul,numbers2)
-			 	
-			 	if mult > max_diagonal:
-			 		max_diagonal = mult
+	 	mult = reduce(operator.mul,numbers1,1)
+	 	if mult > max_diagonal:
+	 		max_diagonal = mult
+
+	 	mult = reduce(operator.mul,numbers2,1) 	
+		if mult > max_diagonal:
+			max_diagonal = mult
 
 
 print max_diagonal

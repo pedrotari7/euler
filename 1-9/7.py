@@ -1,33 +1,18 @@
-import time
+import math
+primes = [2]
+i=2
 
-def factorize(number):
-	factors = []
-	d = 2
-	while number > 1:
-	    while number % d == 0:
-	    	if len(factors) == 1:
-	    		return False
-	    	factors.append(d)
-	    	number /= d
-	    d = d + 1
+while len(primes)<10001:
 
-	return True
+	for num in primes:
 
-if __name__ == '__main__':
-	
-	primes = [2]
-	i=2
+		if i%num == 0:
+			break
 
-	while len(primes)<10001:
-		if i % 2 ==0 or i% 3 ==0 or i ==5:
-			i += 1
-			continue
-		
-		if factorize(i):
+		if num > math.sqrt(i):
 			primes.append(i)
+			break
 
-		# time.sleep(0.001)
+	i += 1
 
-		i += 1
-
-	print primes[-2]
+print primes[-1]
