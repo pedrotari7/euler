@@ -1,7 +1,5 @@
-
-a = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T'$
 with open('words.txt','r') as f:
-        values = [sum([a.index(c)+1 for c in w]) for w in f.read().replace('"','').r$
+        values = [sum([ord(c)-64 for c in w]) for w in f.read().replace('"','').repl$
 max_value = max(values)
 tri = [-1]
 i = 0
