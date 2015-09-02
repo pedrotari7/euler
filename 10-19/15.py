@@ -1,31 +1,19 @@
-
-def path(point,ways,dim):
-
-	if ways == []:
-		ways.append([point])
-	else:	
-		ways[-1].append(point)
-
-	if point == (dim,dim):
-		print ways[-1]
-		ways.append([])
-		return ways
-
-	if point[0]+1 < dim+1:
-		ways = path((point[0]+1,point[1]),ways,dim)
-
-	if point[1]+1 < dim+1:
-		ways = path((point[0],point[1]+1),ways,dim)
-
-
-	return ways
-
-
+def path(n):
+    n += 1
+    grid =[n*[0] for k in xrange(n)]
+    
+    for i in xrange(n):
+        for j in xrange(n):
+            if j == 0:
+                grid[i][j] = 1
+            elif i == j:
+                grid[i][j] = 2*grid[i][j-1]
+            elif i > j:
+                grid[i][j] = grid[i][j-1] + grid[i-1][j]
+    return grid
 
 initial = (0,0)
-dim = 4
-ways = path(initial,[],dim)
+dim = 20
+ways = path(dim)
 
-for ele in ways:
-	print str(ele)
-print len(ways)-1
+print '\n' + str(ways[-1][-1])
