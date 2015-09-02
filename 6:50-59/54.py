@@ -39,7 +39,7 @@ def get_hand(hand):
 p1,p2,d = 0,0,0
 with open('p054_poker.txt','r') as f:
     games = [(h.split(' ')[:5],h.split()[5:]) for h in f.read().split('\n')]
-
+   
     count = 0
     for game in games:
         k1,r1 = get_hand(game[0])
