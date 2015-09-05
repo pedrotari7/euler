@@ -21,7 +21,7 @@ def gen_primes(n):
         i += 1
     return primes
 
-top = 10**3
+top = 10**6
 
 values = gen_primes(top)[2:]
 print len(values)
