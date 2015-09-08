@@ -1,31 +1,49 @@
 import time, copy
-def is_bouncy(n):
+def is_non_bouncy(n):
     num = ''.join(sorted(str(n)))
-    return int(num)!=n and int(num[::-1])!=n
+
+    if len(set(num)) == 1:
+        return (n,'=') 
+    elif int(num)==n:
+        return (n,'+') 
+    elif int(num[::-1])==n:
+        return (n,'-')
+    else:
+        return False
+
 ini = time.time()
 special = []
 n = 100
 exp = 3
 
 while n < 10**exp:
-    if not is_bouncy(n):
-        special.append(n)
+    result = is_non_bouncy(n) 
+    if result:
+        print result
+        special.append(result)
     n+=1
 
 exp += 1
 count  = len(special) + 99
 
-while exp <= 15:
+while exp <= 20:
     print exp
     new_special = []
     print len(special)
-    for i in special:
-        for j in xrange(1,10):
+    for i,mode in special:
+        if mode == '+':
+            scan = xrange(1,int(str(i)[0])+1)
+        elif mode == '-':
+            scan = xrange(9,int(str(i)[0])-1,-1)
+        elif mode == '=':
+            scan = xrange(1,10)
+        for j in scan:
             test = j*10**(exp-1) + i
             #print test
-            if not is_bouncy(test):
-                new_special.append(test)
-
+            result = is_non_bouncy(test)
+            if result:
+                new_special.append(result)
+    print len(new_special)
     count += len(new_special)
     special = copy.copy(new_special)
     exp += 1
@@ -33,3 +51,5 @@ while exp <= 15:
 print time.time()-ini
 
 print count
+print 12951-count
+
