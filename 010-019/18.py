@@ -16,26 +16,8 @@ a = """75
 
 tri =  [[int(num) for num in ele.split()] for ele in a.split('\n')]
 
-size = len(tri[-1])
+for i in xrange(len(tri)-2,-1,-1):
+    for j in xrange(len(tri[i])):
+        tri[i][j] += max(tri[i+1][j],tri[i+1][j+1])
 
-tri = [([00]*int(((size-len(ele))/2.0)) + ele + [0]*((size-len(ele))/2))for ele in tri]
-
-for ele in tri:
-	print ele
-	print len(ele)
-
-values_left = []
-values_right = []
-
-for i in xrange(len(tri)):
-	print "i: " + str(i)
-	for j in xrange(size):
-		print "j: " + str(j)
-		print "len(tri[i]): " + str(len(tri[i]))
-		if j >= size/2:
-			values_left.append(tri[i][j])
-		if j <= size/2:
-			values_right.append(tri[i][j])
-
-print values_right
-print values_left
+print tri[0][0]
