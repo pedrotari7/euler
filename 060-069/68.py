@@ -1,8 +1,7 @@
 from itertools import combinations
 from operator import or_
 
-lines = [comb for comb in combinations(range(1,11),3) if sum(comb)==16]
-
+lines = [list(comb) for comb in combinations(range(1,11),3) if sum(comb) == 14]
 combs = list(combinations(lines,5))
 
 valid_combs = []
@@ -26,7 +25,7 @@ for comb in combs:
         continue
 
     elements = list(elements)
-    for combi in comb:
+    for i,combi in enumerate(comb):
         count2 = []
         for ele in combi:
             count2.append(count[elements.index(ele)])
@@ -38,3 +37,5 @@ for comb in combs:
         continue
 
     valid_combs.append(comb)
+
+print valid_combs
