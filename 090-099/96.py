@@ -79,23 +79,32 @@ def update_game(poss,game):
         for j,pos in enumerate(line):
             if game[i][j]!=0 and len(pos)>1:
                 poss[i][j] = [game[i][j]]
+                num = game[i][j]
+                poss = update_line_poss(poss,num,i)
+                poss = update_column_poss(poss,num,j)
+                poss = update_square_poss(poss,num,(i,j))
             if game[i][j] == 0 and len(pos) == 1:
                 #print i,j,pos[0]
                 game[i][j] = pos[0]
-
-            num = game[i][j]
-            poss = update_line_poss(poss,num,i)
-            poss = update_column_poss(poss,num,j)
-            poss = update_square_poss(poss,num,(i,j))
+                num = game[i][j]
+                poss = update_line_poss(poss,num,i)
+                poss = update_column_poss(poss,num,j)
+                poss = update_square_poss(poss,num,(i,j))
 
             line = get_line(poss,i)
             column = get_column(poss,j)
             square = get_square(poss,(i,j))
 
+
             for d in poss[i][j]:
-                if game[i][j] not in [0,d] and (sum([l.count(d) for l in line]) == 1 or sum([l.count(d) for l in column]) == 1 or sum([l.count(d) for l in square]) == 1):
+
+                if game[i][j] !=0 and game[i][j]!=d:
+                    print sum([l.count(d) for l in line]),sum([l.count(d) for l in column]),sum([l.count(d) for l in square])
+
+                if game[i][j] !=0 and game[i][j]!=d and (sum([l.count(d) for l in line]) == 1 or sum([l.count(d) for l in column]) == 1 or sum([l.count(d) for l in square]) == 1):
                     game[i][j] = d
                     poss[i][j] = [game[i][j]]
+                    print i,j,d
                     poss = update_line_poss(poss,d,i)
                     poss = update_column_poss(poss,d,j)
                     poss = update_square_poss(poss,d,(i,j))
@@ -121,21 +130,19 @@ def solve(game):
 import copy
 
 games = read_games()
-# game = copy.deepcopy(games[0])
-solved_games = [solve(game) for game in games]
+game = copy.deepcopy(games[1])
+# solved_games = [solve(game) for game in games]
 
-# import time
-# completed = False
-# poss = [[range(1,10) for i in xrange(9)] for i in xrange(9)]
+completed = False
+poss = [[range(1,10) for i in xrange(9)] for i in xrange(9)]
 
-# while not completed:
+while not completed:
 
-#     #print '{}/81'.format(missing_values(game))
-#     ini = time.time()
-#     game,poss = update_game(poss,game)
+    #print '{}/81'.format(missing_values(game))
+    ini = time.time()
+    game,poss = update_game(poss,game)
 
-#     completed = is_completed(game)
+    completed = is_completed(game)
 
-# print_game(game)
-# print time.time()-ini
-
+print_game(game)
+print time.time()-ini
