@@ -1,12 +1,141 @@
+import time
+
+square1 = [(0,0),(0,1),(0,2),(1,0),(1,1),(1,2),(2,0),(2,1),(2,2)]
+square2 = [(0,3),(0,4),(0,5),(1,3),(1,4),(1,5),(2,3),(2,4),(2,5)]
+square3 = [(0,6),(0,7),(0,8),(1,6),(1,7),(1,8),(2,6),(2,7),(2,8)]
+square4 = [(3,0),(3,1),(3,2),(4,0),(4,1),(4,2),(5,0),(5,1),(5,2)]
+square5 = [(3,3),(3,4),(3,5),(4,3),(4,4),(4,5),(5,3),(5,4),(5,5)]
+square6 = [(3,6),(3,7),(3,8),(4,6),(4,7),(4,8),(5,6),(5,7),(5,8)]
+square7 = [(6,0),(6,1),(6,2),(7,0),(7,1),(7,2),(8,0),(8,1),(8,2)]
+square8 = [(6,3),(6,4),(6,5),(7,3),(7,4),(7,5),(8,3),(8,4),(8,5)]
+square9 = [(6,6),(6,7),(6,8),(7,6),(7,7),(7,8),(8,6),(8,7),(8,8)]
+squares = [square1,square2,square3,square4,square5,square6,square7,square8,square9]
+
+def print_game(game):
+    print '\n'
+    for i,line in enumerate(game):
+        if i in [3,6]:
+            print '-'*6+'+'+'-'*7+'+'+'-'*6
+        print line[0],line[1],line[2],'|',line[3],line[4],line[5],'|',line[6],line[7],line[8]
 
 def read_games():
     games = []
     with open('p096_sudoku.txt') as f:
         while f.readline():
-            games.append([f.readline().replace('\r','').replace('\n','') for line in xrange(9)])
+            games.append([[int(num) for num in f.readline().replace('\r','').replace('\n','')] for line in xrange(9)])
     return games
 
+def is_completed(game):
+    for line in game:
+        if 0 in line:
+            return False
+    return True
+
+def missing_values(game):
+    return sum([line.count(0) for line in game])
+
+def find_square(n):
+    for square in squares:
+        if n in square:
+            return square
+
+def get_line(game,n):
+    return game[n]
+
+def get_column(game,n):
+    temp = []
+    for line in game:
+        temp.append(line[n])
+    return temp
+
+def get_square(game,n):
+    temp = []
+    for i,j in find_square(n):
+      temp.append(game[i][j])
+    return temp
+
+def update_line_poss(poss,num,n):
+    for j,pos in enumerate(poss[n]):
+        if num in pos and len(pos)>1:
+            poss[n][j].remove(num)
+    return poss
+
+def update_column_poss(poss,num,n):
+    for i,pos in enumerate(poss):
+        if num in pos[n] and len(pos[n])>1:
+            poss[i][n].remove(num)
+    return poss
+
+def update_square_poss(poss,num,n):
+    for i,j in find_square(n):
+        if num in poss[i][j] and len(poss[i][j])>1:
+            poss[i][j].remove(num)
+    return poss
+
+
+def update_game(poss,game):
+
+    for i,line in enumerate(poss):
+        for j,pos in enumerate(line):
+            if game[i][j]!=0 and len(pos)>1:
+                poss[i][j] = [game[i][j]]
+            if game[i][j] == 0 and len(pos) == 1:
+                #print i,j,pos[0]
+                game[i][j] = pos[0]
+
+            num = game[i][j]
+            poss = update_line_poss(poss,num,i)
+            poss = update_column_poss(poss,num,j)
+            poss = update_square_poss(poss,num,(i,j))
+
+            line = get_line(poss,i)
+            column = get_column(poss,j)
+            square = get_square(poss,(i,j))
+
+            for d in poss[i][j]:
+                if game[i][j] not in [0,d] and (sum([l.count(d) for l in line]) == 1 or sum([l.count(d) for l in column]) == 1 or sum([l.count(d) for l in square]) == 1):
+                    game[i][j] = d
+                    poss[i][j] = [game[i][j]]
+                    poss = update_line_poss(poss,d,i)
+                    poss = update_column_poss(poss,d,j)
+                    poss = update_square_poss(poss,d,(i,j))
+
+    return game,poss
+
 def solve(game):
-    pass
+    ini = time.time()
+    completed = False
+    poss = [[range(1,10) for i in xrange(9)] for i in xrange(9)]
+    while not completed:
+
+        #print '{}/81'.format(missing_values(game))
+
+        game,poss = update_game(poss,game)
+
+        completed = is_completed(game)
+
+    print_game(game)
+    print time.time()-ini
+    return game
+
+import copy
 
 games = read_games()
+# game = copy.deepcopy(games[0])
+solved_games = [solve(game) for game in games]
+
+# import time
+# completed = False
+# poss = [[range(1,10) for i in xrange(9)] for i in xrange(9)]
+
+# while not completed:
+
+#     #print '{}/81'.format(missing_values(game))
+#     ini = time.time()
+#     game,poss = update_game(poss,game)
+
+#     completed = is_completed(game)
+
+# print_game(game)
+# print time.time()-ini
+
