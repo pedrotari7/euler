@@ -48,10 +48,15 @@ def get_column(game,n):
         temp.append(line[n])
     return temp
 
-def get_square(game,n):
+def get_square(game,n,line=-1,column=-1):
     temp = []
     for i,j in find_square(n):
-      temp.append(game[i][j])
+        if line != -1 or column !=-1:
+            if line == i or column == j:
+                temp.append(game[i][j])
+        else:
+            temp.append(game[i][j])
+
     return temp
 
 def update_line_poss(poss,num,n):
@@ -60,11 +65,31 @@ def update_line_poss(poss,num,n):
             poss[n][j].remove(num)
     return poss
 
+def update_line_other_squares(poss,d,n):
+
+    own_square = find_square(n)
+
+    for j,pos in enumerate(poss[n[0]]):
+        if (n[0],j) not in own_square:
+            if d in pos and len(pos)>1:
+                poss[n[0]][j].remove(d)
+    return poss
+
+
 def update_column_poss(poss,num,n):
     for i,pos in enumerate(poss):
         if num in pos[n] and len(pos[n])>1:
             poss[i][n].remove(num)
     return poss
+
+def update_column_other_squares(poss,d,n):
+    own_square = find_square(n)
+    for i,pos in enumerate(poss):
+        if (i,n[1]) not in own_square:
+            if d in pos[n[1]] and len(pos[n[1]])>1:
+                poss[i][n[1]].remove(d)
+    return poss
+
 
 def update_square_poss(poss,num,n):
     for i,j in find_square(n):
@@ -87,27 +112,36 @@ def update_game(poss,game):
                 #print i,j,pos[0]
                 game[i][j] = pos[0]
                 num = game[i][j]
+                # print i,j,game[i][j],pos
                 poss = update_line_poss(poss,num,i)
                 poss = update_column_poss(poss,num,j)
                 poss = update_square_poss(poss,num,(i,j))
 
-            line = get_line(poss,i)
-            column = get_column(poss,j)
-            square = get_square(poss,(i,j))
-
-
             for d in poss[i][j]:
 
-                if game[i][j] !=0 and game[i][j]!=d:
-                    print sum([l.count(d) for l in line]),sum([l.count(d) for l in column]),sum([l.count(d) for l in square])
+                d_in_line = sum([l.count(d) for l in get_line(poss,i)])
+                d_in_column = sum([l.count(d) for l in get_column(poss,j)])             
+                d_in_square = sum([l.count(d) for l in get_square(poss,(i,j))])
 
-                if game[i][j] !=0 and game[i][j]!=d and (sum([l.count(d) for l in line]) == 1 or sum([l.count(d) for l in column]) == 1 or sum([l.count(d) for l in square]) == 1):
+                if game[i][j] ==0 and game[i][j]!=d and (d_in_line == 1 or d_in_column == 1 or d_in_square == 1):
                     game[i][j] = d
-                    poss[i][j] = [game[i][j]]
-                    print i,j,d
-                    poss = update_line_poss(poss,d,i)
-                    poss = update_column_poss(poss,d,j)
-                    poss = update_square_poss(poss,d,(i,j))
+                    # print 'extra'
+                    # print d_in_line,d_in_column,d_in_square
+                    # print i,j,d
+
+                if  game[i][j]==0 and sum([l.count(d) for l in  get_square(poss,(i,j),i)]) == d_in_square:
+                    poss = update_line_other_squares(poss,d,(i,j))
+                    # print 'guess1'
+                    # print_game(game)
+                    # print d_in_line,d_in_square
+                    # print i,j,d
+                if  game[i][j] ==0  and sum([l.count(d) for l in  get_square(poss,(i,j),-1,j)]) == d_in_square:
+                    # print 'guess2'
+                    # print_game(game)
+                    # print d_in_column,d_in_square
+                    # print i,j,d
+                    poss = update_column_other_squares(poss,d,(i,j))
+
 
     return game,poss
 
@@ -130,7 +164,7 @@ def solve(game):
 import copy
 
 games = read_games()
-game = copy.deepcopy(games[1])
+game = copy.deepcopy(games[5])
 # solved_games = [solve(game) for game in games]
 
 completed = False
