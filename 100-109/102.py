@@ -19,25 +19,11 @@ def is_inside(A,B,C,P=(0,0)):
 
     return (u >= 0) and (v >= 0) and (u + v < 1)
 
-
-A = (-340,495)
-B = (-153,-910)
-C = (835,-947)
-
-X = (-175,41)
-Y = (-421,-714)
-Z = (574,-645)
-
-print is_inside(X,Y,Z)
-
 with open('p102_triangles.txt','r') as f:
-    triangles = []
-    a = f.read()
-    for tri in a.split('\n'):
+    count = 0
+    for tri in f.read().split('\n'):
             ele = tri.split(',')
-            triangles.append([(int(ele[0]),int(ele[1])),(int(ele[2]),int(ele[3])),(int(ele[4]),int(ele[5]))])
+            if is_inside((int(ele[0]),int(ele[1])),(int(ele[2]),int(ele[3])),(int(ele[4]),int(ele[5]))):
+                count += 1
 
-count = 0
-for tri in triangles:
-    if is_inside(tri[0],tri[1],tri[2]):
-        count+=1
+print count
