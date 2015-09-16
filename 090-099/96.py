@@ -172,7 +172,6 @@ poss = [[range(1,10) for i in xrange(9)] for i in xrange(9)]
 
 while not completed:
 
-    #print '{}/81'.format(missing_values(game))
     ini = time.time()
     game,poss = update_game(poss,game)
 
