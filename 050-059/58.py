@@ -24,17 +24,15 @@ primes = [2]
 i = 1
 last =100
 per = 100
-current_diag = []
+current_diag = 0
 found = False
 while not found:
 
-
-	tr = i**2
 	tl = i**2-i+2
 	bl = i**2-2*i+2
 	br = i**2-3*i+3
 
-	new = [tr,tl,bl,br] 
+	new = [tl,bl,br] 
 
 
 	max_value = max(new)
@@ -44,27 +42,18 @@ while not found:
 
 
 	for new_value in new:
-		if new_value in primes:
-			current_diag.append(new_value)
+		if new_value in primes[-1000:]:
+			current_diag+=1
 
+	per = (current_diag/float(2*i-1))*100
 
-
-	per = (len(current_diag)/float(2*i-1))*100
-
-	if per < 10 and last> 10 and int(round(per)) == 10:
+	if per < 10  and int(round(per)) == 10:
 		found = True
 		print i
 		break
 
-	last = per
-
 	print "n={} with {}% of primes".format(i,per) 
 
-	if per > 10.5:
-		i+=10
-	elif per < 10:
-		i-=1
-	else:
-		i+=1
+	i+=1
 
 

@@ -151,8 +151,6 @@ def solve(game):
     poss = [[range(1,10) for i in xrange(9)] for i in xrange(9)]
     while not completed:
 
-        #print '{}/81'.format(missing_values(game))
-
         game,poss = update_game(poss,game)
 
         completed = is_completed(game)
@@ -164,7 +162,7 @@ def solve(game):
 import copy
 
 games = read_games()
-game = copy.deepcopy(games[5])
+game = copy.deepcopy(games[9])
 # solved_games = [solve(game) for game in games]
 
 completed = False
