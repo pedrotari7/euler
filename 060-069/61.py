@@ -15,7 +15,7 @@ for i in xrange(1,10**4):
 		hexnum.append(i*(2*i-1))
 
 	if len(str(i*(3*i-1)/2))==4:
-		pennum.append(i*(3*i-1)/2)
+		pennum.append(i*(3*+i-1)/2)
 
 	if len(str(i*i))==4:
 		squarenum.append(i*i)
