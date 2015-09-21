@@ -1,7 +1,7 @@
 from itertools import permutations
 import math
 
-with open('words.txt','r') as f:
+with open('p098_words.txt','r') as f:
     words = f.read().replace('"','').split(',')
     sorted_words = [''.join(sorted(ele)) for ele in words]
 
