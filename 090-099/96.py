@@ -98,21 +98,35 @@ def update_square_poss(poss,num,n):
     return poss
 
 
+def update_other_lines_of_square(poss,num,n):
+    for i,j in find_square(n):
+        if num in poss[i][j] and len(poss[i][j])>1 and n[0]!=i:
+            poss[i][j].remove(num)
+    return poss
+    
+def update_other_columns_of_square(poss,num,n):
+    for i,j in find_square(n):
+        if num in poss[i][j] and len(poss[i][j])>1 and n[1]!=j:
+            poss[i][j].remove(num)
+    return poss    
+
 def update_game(poss,game):
+    
+    same = True
 
     for i,line in enumerate(poss):
         for j,pos in enumerate(line):
             if game[i][j]!=0 and len(pos)>1:
+                same = False
                 poss[i][j] = [game[i][j]]
                 num = game[i][j]
                 poss = update_line_poss(poss,num,i)
                 poss = update_column_poss(poss,num,j)
                 poss = update_square_poss(poss,num,(i,j))
             if game[i][j] == 0 and len(pos) == 1:
-                #print i,j,pos[0]
+                same = False
                 game[i][j] = pos[0]
                 num = game[i][j]
-                # print i,j,game[i][j],pos
                 poss = update_line_poss(poss,num,i)
                 poss = update_column_poss(poss,num,j)
                 poss = update_square_poss(poss,num,(i,j))
@@ -122,28 +136,35 @@ def update_game(poss,game):
                 d_in_line = sum([l.count(d) for l in get_line(poss,i)])
                 d_in_column = sum([l.count(d) for l in get_column(poss,j)])             
                 d_in_square = sum([l.count(d) for l in get_square(poss,(i,j))])
-
-                if game[i][j] ==0 and game[i][j]!=d and (d_in_line == 1 or d_in_column == 1 or d_in_square == 1):
+                d_in_line_of_square = sum([l.count(d) for l in get_square(poss,(i,j))[i*3:i*3+3]])
+                d_in_column_of_square = sum([l.count(d) for l in get_square(poss,(i,j))[j:10:3]])
+                
+                
+                if game[i][j] == 0 and (d_in_line == 1 or d_in_column == 1 or d_in_square == 1):
                     game[i][j] = d
-                    # print 'extra'
-                    # print d_in_line,d_in_column,d_in_square
-                    # print i,j,d
-
-                if  game[i][j]==0 and sum([l.count(d) for l in  get_square(poss,(i,j),i)]) == d_in_square:
+                    poss = update_line_poss(poss,d,i)
+                    poss = update_column_poss(poss,d,j)
+                    poss = update_square_poss(poss,d,(i,j))
+                    same = False
+                
+                elif game[i][j] == 0 and sum([l.count(d) for l in  get_square(poss,(i,j),i)]) == d_in_square and d_in_line!=d_in_square and d_in_line > 1 :
                     poss = update_line_other_squares(poss,d,(i,j))
-                    # print 'guess1'
-                    # print_game(game)
-                    # print d_in_line,d_in_square
-                    # print i,j,d
-                if  game[i][j] ==0  and sum([l.count(d) for l in  get_square(poss,(i,j),-1,j)]) == d_in_square:
-                    # print 'guess2'
-                    # print_game(game)
-                    # print d_in_column,d_in_square
-                    # print i,j,d
+                    same = False
+
+                elif game[i][j] == 0 and sum([l.count(d) for l in  get_square(poss,(i,j),-1,j)]) == d_in_square and d_in_column!=d_in_square and d_in_column >1:
                     poss = update_column_other_squares(poss,d,(i,j))
-
-
-    return game,poss
+                    same = False
+                    
+                 
+                elif game[i][j] == 0 and d_in_line == d_in_line_of_square and d_in_line != d_in_square and d_in_line>1:
+                    poss = update_other_lines_of_square(poss,d,(i,j))
+                    same = False
+    
+                elif game[i][j] == 0 and d_in_column == d_in_column_of_square and d_in_column != d_in_square and d_in_column>1:
+                    poss = update_other_columns_of_square(poss,d,(i,j))
+                    same = False
+                    
+    return game,poss,same
 
 def solve(game):
     ini = time.time()
@@ -162,18 +183,34 @@ def solve(game):
 import copy
 
 games = read_games()
-game = copy.deepcopy(games[9])
+game = copy.deepcopy(games[6])
 # solved_games = [solve(game) for game in games]
 
-completed = False
-poss = [[range(1,10) for i in xrange(9)] for i in xrange(9)]
 
-while not completed:
+for num,game in enumerate(games[27:]):
+    num = num + 27
+    completed = False
+    poss = [[range(1,10) for i in xrange(9)] for i in xrange(9)]
 
-    ini = time.time()
-    game,poss = update_game(poss,game)
-
-    completed = is_completed(game)
-
-print_game(game)
-print time.time()-ini
+    while not completed:
+    
+        ini = time.time()
+        game,poss,same = update_game(poss,game)
+        
+        completed = is_completed(game)
+    
+        if same:
+            print num,'  !!!!!!Stuck!!!!!!'
+            empty = []
+            for i in xrange(9):
+                for j in xrange(9):
+                    if game[i][j] == 0:
+                        empty.append((len(poss[i][j]),(i,j)))
+                        
+            empty=sorted(empty)
+            break
+    
+    if completed:
+        print num,'  Completed'
+        # print_game(game)
+        # print time.time()-ini
