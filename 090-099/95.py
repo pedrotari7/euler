@@ -1,53 +1,32 @@
-import time
-
 def factors(n):
-	f = list(set(reduce(list.__add__, ([i, n//i] for i in range(1, int(n**0.5) + 1) if n % i == 0))))
-	f.remove(n)
-	return sum(f)
-
-def len_chain(key,d,chain_len):
-    chain = [key]
-    while 1:
-        print d[key],len(chain)
-        current = d[chain[-1]]
-        chain.append(current)
-        if current in chain_len:
-            if chain_len[current] + len(chain) < n:
-                chain_len[key] = chain_len[current] + len(chain)
-            return chain_len[current] + len(chain),chain_len
-            
-            
-        if chain.count(current)==2 or current > limit or current > n or current not in d or d[current]==current:
-            if current in chain:
-                print chain[:-1]
-
-                chain_len[key] = len(chain)
-                return len(chain),chain_len
-
-        
+    f = list(set(reduce(
+        list.__add__,
+        ([i, n // i] for i in range(1, int(n**0.5) + 1) if n % i == 0))))
+    f.remove(n)
+    return sum(f)
 
 
-ini = time.time()
-n = 100000
+n = 15000
 limit = 10**6
-d = dict()
+d = {1: 1}
 d[1] = 1
-for i in xrange(2,n+1):
-    temp = factors(i)
-    if temp < limit:
-        d[i] = temp
 
+final = dict()
 
-print 'start'
+for i in xrange(2, n + 1):
+    chain = [i]
 
-longest = 0
+    while 1:
+        if chain[-1] not in d:
+            d[chain[-1]] = factors(chain[-1])
+        current = d[chain[-1]]
 
+        if current == i:
+            final[i] = chain
+            break
+        if current in chain or current > limit or (current in d and d[current] == current):
+            break
 
-chain_len=dict()
+        chain.append(current)
 
-for key in d:
-    len_chain(key,d,chain_len)
-    
-print len(d.keys())
-print longest
-print time.time()-ini
+print max([(len(final[ele]),min(final[ele])) for ele in final])
