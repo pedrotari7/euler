@@ -9,6 +9,6 @@ def fareyrange(n,left1,left2,right):
         counter+=1
     return counter-1
     
-fareyrange(12000,(1,3),(4000,11999),(1,2))
+print fareyrange(12000,(1,3),(4000,11999),(1,2))
 
 
