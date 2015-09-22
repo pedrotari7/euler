@@ -1,14 +1,16 @@
-def fareyrange(n,left1,left2,right):
-    a1 = left1
-    a2 = left2
-    counter = 1
-    while a2!=right:
-        flr = int((n+a1[1])/a2[1])
-        b = (flr*a2[0]-a1[0], flr*a2[1]-a1[1])
-        a1,a2 = a2,b
-        counter+=1
-    return counter-1
-    
-print fareyrange(12000,(1,3),(4000,11999),(1,2))
+def counting_fractions_in_a_range(limit):
+    limit += 1
+    in_a_range = [0, 0] + [(x - 1) for x in range(2, limit)]
+
+    for d in range(2, limit):
+        too_small  = int(1 * (d / 3))
+        too_large = ((d - (int(1 * (d / 2)) + 1))
+                     if d % 2 != 0 else (d - int(1 * (d / 2))))
+        in_a_range[d] -= too_small + too_large
+
+        for f in range((d * 2), limit, d):
+            in_a_range[f] -= in_a_range[d]
+            
+    return sum(in_a_range)
 
 
