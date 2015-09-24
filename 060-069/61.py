@@ -1,38 +1,52 @@
-import math,copy
+from itertools import permutations
 
-octnum,heptnum,hexnum,pennum,squarenum,trinum = [],[],[],[],[],[]
+def trig(n):
+    return n*(n+1)//2
 
+def quad(n):
+    return n*n
 
-for i in xrange(1,10**4):
+def penta(n):
+    return n*(3*n-1)//2
 
-	if len(str(i*(3*i-2)))==4:
-		octnum.append(i*(3*i-2))
+def hexa(n):
+    return n*(2*n-1)
 
-	if len(str(i*(5*i-3)/2))==4:
-		heptnum.append(i*(5*i-3)/2)
+def hepta(n):
+    return n*(5*n-3)//2
 
-	if len(str(i*(2*i-1)))==4:
-		hexnum.append(i*(2*i-1))
+def octo(n):
+    return n*(3*n-2)
 
-	if len(str(i*(3*i-1)/2))==4:
-		pennum.append(i*(3*+i-1)/2)
+def ajout(d,k,x):
+    try:
+        d[k].append(x)
+    except:
+        d[k]=[x]
 
-	if len(str(i*i))==4:
-		squarenum.append(i*i)
+listef=[trig,quad,penta,hexa,hepta,octo]
+listedict=[dict() for i in range(6)]    
+listenb=[[f(n) for n in range(150) if f(n)>=1000 and f(n)<=9999 and str(f(n))[-2]!='0'] for f in listef]
+for i in range(6):
+    for x in listenb[i]:
+        ajout(listedict[i],x//100,x)
 
-	if len(str(i*(i+1)/2))==4:
-		trinum.append([i*(i+1)/2])
-
-list_num = [squarenum,pennum,hexnum,heptnum,octnum]
-
-new = trinum
-
-for i in xrange(len(list_num)):
-	new_temp = copy.copy(new)
-	new = []
-	for num in new_temp:
-		for numx in list_num[i]:
-			if str(num[-1])[:2] == str(numx)[-2:]:
-				new.append(num + [numx])
-
-print new
+liste_possibilites=[]
+for p in permutations([0,1,2,3,4]):
+    for x in listenb[-1]: 
+        chaines=[[x]]
+        for i in range(5):
+            chaines2=[]
+            for c in chaines:
+                try:
+                    nb=c[-1]
+                    listecontinuation=listedict[p[i]][nb%100]
+                    for y in listecontinuation:
+                        chaines2.append(c+[y])
+                except:
+                    continue
+            chaines=chaines2
+        liste_possibilites+=chaines
+solutions=[x for x in liste_possibilites if x[-1]%100==x[0]//100]
+solution=solutions[0]
+print(sum(solution))
