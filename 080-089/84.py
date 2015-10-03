@@ -1,6 +1,6 @@
 from itertools import product
 
-n = 6
+n = 4
 
 dice = [sum(ele) for ele in product(range(1,n+1),range(1,n+1))]
 
@@ -23,9 +23,9 @@ for i,square in enumerate(squares):
 result = []
 
 for square in squares:
-	count = 1 
+	count = 0
 	for key in mono:
-		count += len([ele[1] for ele in mono[key] if ele[0]==square])
+		count += sum([ele[1]/float(len(mono[key])) for ele in mono[key] if ele[0]==square])
 	result.append((count,square))
 
 print result
