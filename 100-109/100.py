@@ -1,27 +1,21 @@
-from decimal import Context,Decimal
 from math import sqrt
-dot100 = Context(prec=105)
 
-limit = 10**12
+def find_next_solution(n_b, step):
+    while True:
+        n_b+= step
+        T = 2*n_b*(n_b-1)
+        S = int(sqrt(T))
+        if S*(S+1) == T:
+            return int(n_b), S+1  # blues, total
 
-K = ((2*10**12-1)**2-1)/8.
-
-NB = int((1+(1+4*Decimal(K)).sqrt())/2)+1
-
-
-
-while 1:
-
-    NT = (1+ sqrt(1+8*NB*(NB-1)))/2.
-
-    print NT
-
-    if NT.is_integer():
-        print "%d" % NT
-        print "%d" % NB
-        print "%d" % (NT-NB)
+tot = 0
+step = 5
+blues = 15
+while True:
+    blues, tot = find_next_solution(blues, step)
+    step = blues//step
+    if tot > 10**12:
         break
 
 
-    NB += 1
-
+print blues
