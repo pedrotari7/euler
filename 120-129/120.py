@@ -1,0 +1,1 @@
+print(sum(a*(a-1)+(a+1)*(a+1-2) for a in range(3,1001,2)))
