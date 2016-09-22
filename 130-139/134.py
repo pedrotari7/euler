@@ -30,7 +30,7 @@ def find_n(p1,p2):
         i+=2
 
 
-primes = [i for i in gen_primes(10**6)][2:]
+primes = [i for i in gen_primes(10**5)][2:]
 
 S = []
 
