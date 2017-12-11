@@ -13,5 +13,4 @@ for i in xrange(n,2,-1):
         prev = nex
         sq[prev]+=1
 
-total = sum(sq[t] == n for t in sq for n in xrange(1,11))
-print total
+print sum(sq[t] == n for t in sq for n in xrange(1,11))
